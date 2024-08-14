@@ -3,12 +3,17 @@ import TextButton from '../atom/TextButton';
 import AddingMemberModal from '../modals/AddingMemberModal';
 import Member from '../molecules/Member';
 
-function MemberManagement({ type }) {
+function MemberManagement({ type, memberData, groupId, setMemberData }) {
   const [modalOpen, setModalOpen] = useState(false);
-
+  console.log(memberData);
   return (
     <div className="w-[680px] h-[370px] border-solid border-[2px] border-pcDarkGray rounded-xl relative">
-      <AddingMemberModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <AddingMemberModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        groupId={groupId}
+        setMemberData={setMemberData}
+      />
       <div className="flex flex-col w-[680px] h-[300px] overflow-y-auto">
         <div className="w-full h-[30px] leading-[30px] flex">
           <span className="font-bold text-md w-[100px] ml-[20px] text-center">
@@ -21,13 +26,15 @@ function MemberManagement({ type }) {
           <span className="font-bold text-md w-[140px] text-center">삭제</span>
         </div>
         <hr className="w-[550px] mx-auto  h-[1.5px] bg-pcGray my-1" />
-        <Member type={type} />
-        <Member type={type} />
-        <Member type={type} />
-        <Member type={type} />
-        <Member type={type} />
-        <Member type={type} />
-        <Member type={type} />
+        {memberData.map((member, index) => (
+          <Member
+            key={member.email}
+            type={type}
+            member={member}
+            memberIndex={index}
+            setMemberData={setMemberData}
+          />
+        ))}
       </div>
       {type === 'group' && (
         <TextButton

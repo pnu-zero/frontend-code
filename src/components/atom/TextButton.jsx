@@ -1,6 +1,12 @@
 import React from 'react';
 
-function TextButton({ handleClick, color, children, moreStyle }) {
+function TextButton({
+  handleClick,
+  color,
+  children,
+  moreStyle,
+  disabled = false,
+}) {
   if (color === 'light')
     return (
       <button
@@ -8,6 +14,7 @@ function TextButton({ handleClick, color, children, moreStyle }) {
         onClick={() => {
           handleClick();
         }}
+        disabled={disabled}
       >
         <div
           className={`bg-pcLightGray hover:bg-pcGray text-md rounded-2xl border-pcDaryGray border-solid border-[1px] text-pcLightBlack text-center ${moreStyle} font-bold`}
@@ -23,6 +30,7 @@ function TextButton({ handleClick, color, children, moreStyle }) {
         onClick={() => {
           handleClick();
         }}
+        disabled={disabled}
       >
         <div
           className={`bg-pcLightBlack text-md rounded-lg text-white text-center ${moreStyle}`}

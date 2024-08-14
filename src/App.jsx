@@ -18,10 +18,16 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route path="/group" element={<GroupEnrollmentPage />} />
           <Route path="/group/:groupId" element={<GroupPage />} />
-          <Route path="/project" element={<ProjectEnrollmentPage />} />
-          <Route path="/project/:projectId" element={<ProjectPage />} />
           <Route
-            path="/project/:projectId/containor"
+            path="/group/:groupId/project"
+            element={<ProjectEnrollmentPage />}
+          />
+          <Route
+            path="/group/:groupId/project/:projectId"
+            element={<ProjectPage />}
+          />
+          <Route
+            path="/group/:groupId/project/:projectId/containor"
             element={<ContainorEnrollmentPage />}
           />
         </Route>

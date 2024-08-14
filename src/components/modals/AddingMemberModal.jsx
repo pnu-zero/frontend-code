@@ -1,8 +1,15 @@
 import ReactModal from 'react-modal';
+import { useState } from 'react';
 import InputBox from '../atom/InputBox';
 import TextButton from '../atom/TextButton';
+import { inviteGroupMember } from '../../apis/group';
 
-function AddingMemberModal({ modalOpen, setModalOpen }) {
+function AddingMemberModal({
+  modalOpen,
+  setModalOpen,
+  groupId,
+  setMemberData,
+}) {
   /* overlay는 모달 창 바깥 부분을 처리하는 부분이고,
 content는 모달 창부분이라고 생각하면 쉬울 것이다 */
   const customModalStyles = {
@@ -31,6 +38,7 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
     },
   };
 
+  const [email, setEmail] = useState('');
   return (
     <ReactModal
       isOpen={modalOpen}
@@ -49,8 +57,8 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
             placeholder="이메일 *"
             isError={false}
             moreStyle="w-[220px] h-[30px]"
-            onChange={() => {
-              console.log('이메일 변경');
+            onChange={(e) => {
+              setEmail(e.target.value);
             }}
           />
         </div>
@@ -58,8 +66,22 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
           <TextButton
             moreStyle="w-[100px] h-[25px] leading-[25px] rounded-xl mr-2"
             color="dark"
-            handleClick={() => {
-              setModalOpen(false);
+            handleClick={async () => {
+              try {
+                const { data } = await inviteGroupMember(groupId, email); // 비동기 작업이 완료될 때까지 대기
+                setMemberData((prev) => {
+                  const tempMemberData = [...prev];
+                  tempMemberData.push({
+                    name: data.name,
+                    email: data.email,
+                    auth: '멤버',
+                  });
+                  return tempMemberData;
+                });
+                setModalOpen(false); // 작업이 완료된 후 모달 닫기
+              } catch (e) {
+                console.log(e); // 오류 처리
+              }
             }}
           >
             초대

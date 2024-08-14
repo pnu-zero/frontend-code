@@ -58,7 +58,7 @@ function MyProfilePage() {
         Save
       </TextButton>
 
-      <Alink href="https://www.naver.com/">Back to Home</Alink>
+      <Alink href="/">Back to Home</Alink>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BsFillInboxesFill } from 'react-icons/bs';
 import { BiSolidPencil } from 'react-icons/bi';
 import TextButton from '../atom/TextButton';
@@ -8,10 +8,33 @@ import MemberManagement from '../organisms/MemberManagement';
 
 function GroupPage() {
   const { groupId } = useParams();
+  const navigate = useNavigate();
   const [titleEdit, setTitleEdit] = useState(false);
   const [descEdit, setDescEdit] = useState(false);
+  const [groupData, setGroupData] = useState({
+    title: '',
+    desc: '',
+  });
+  const [memberData, setMemberData] = useState([
+    {
+      name: '김선우',
+      email: 'ttcoristory@Navre.com',
+      auth: '소유자',
+    },
+    {
+      name: '김선우',
+      email: 'ttcoristory@Navre.com',
+      auth: '소유자',
+    },
+    {
+      name: '김선우',
+      email: 'ttcoristory@Navre.com',
+      auth: '소유자',
+    },
+  ]);
 
   console.log(groupId);
+
   return (
     <div className="flex flex-col w-[1280px] h-[850px] mx-auto relative">
       <div className="flex items-center justify-between mt-24">
@@ -23,12 +46,16 @@ function GroupPage() {
               placeholder="그룹 명 *"
               isError={false}
               moreStyle="w-[400px] h-[40px] mr-2"
-              onChange={() => {
-                console.log('그룹 명');
+              onChange={(e) => {
+                setGroupData((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }));
               }}
+              defaultValue={groupData.title}
             />
           ) : (
-            <span className="font-bold text-2xl mr-2">그룹1</span>
+            <span className="font-bold text-2xl mr-2">{groupData.title}</span>
           )}
           {titleEdit || (
             <button
@@ -58,7 +85,7 @@ function GroupPage() {
           moreStyle="w-[140px] h-[35px] rounded-xl mr-24"
           color="dark"
           handleClick={() => {
-            console.log('프로젝트 추가 +');
+            navigate(`/group/${groupId}/project`);
           }}
         >
           <span className="text-white text-md leading-[35px]">
@@ -99,21 +126,28 @@ function GroupPage() {
           type="text"
           placeholder="그룹 설명을 적어주세요"
           className="block px-4 py-3 outline-none rounded-lg w-[900px] h-[250px] ml-12 mt-2 text-xl font-medium border-pcGray border-solid border-[2px]"
-          onChange={() => {
-            console.log('비밀번호 재 확인');
+          onChange={(e) => {
+            setGroupData((prev) => ({
+              ...prev,
+              desc: e.target.value,
+            }));
           }}
+          defaultValue={groupData.desc}
         />
       ) : (
         <span className="w-[900px] ml-12 mt-2 text-xl font-medium">
-          우리 그룹은 다양한 배경과 전문성을 가진 [팀 구성원 수]명의 열정적인
-          구성원들로 이루어져 있습니다. [각 팀원들의 역할 또는 특기] 등으로
-          구성되어 있으며, 함께 협력하여 혁신적인 해결책을 모색하고 있습니다.
+          {groupData.desc}
         </span>
       )}
 
       <span className="font-bold text-xl ml-12 mt-12">그룹 멤버</span>
       <div className="ml-12 mt-1">
-        <MemberManagement type="group" />
+        <MemberManagement
+          type="group"
+          memberData={memberData}
+          groupId={groupId}
+          setMemberData={setMemberData}
+        />
       </div>
     </div>
   );

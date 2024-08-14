@@ -1,8 +1,20 @@
 import { BsFillInboxesFill } from 'react-icons/bs';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import InputBox from '../atom/InputBox';
 import TextButton from '../atom/TextButton';
+import enrollGroup from '../../apis/group';
 
 function GroupEnrollmentPage() {
+  const [groupData, setGroupData] = useState({
+    title: '',
+    desc: '',
+  });
+
+  const [groupId, setGroupId] = useState(-1);
+
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col w-[1280px] h-[850px] mx-auto relative">
       <div className="flex items-center justify-between mt-36">
@@ -13,8 +25,11 @@ function GroupEnrollmentPage() {
             placeholder="그룹 명 *"
             isError={false}
             moreStyle="w-[400px] h-[40px]"
-            onChange={() => {
-              console.log('그룹 명');
+            onChange={(e) => {
+              setGroupData((prev) => ({
+                ...prev,
+                title: e.target.value,
+              }));
             }}
           />
         </div>
@@ -27,16 +42,28 @@ function GroupEnrollmentPage() {
         type="text"
         placeholder="그룹 설명을 적어주세요"
         className="block px-4 py-3 outline-none rounded-lg w-[900px] h-[250px] ml-12 mt-2 text-xl font-medium border-pcGray border-solid border-[2px]"
-        onChange={() => {
-          console.log('비밀번호 재 확인');
+        onChange={(e) => {
+          setGroupData((prev) => ({
+            ...prev,
+            desc: e.target.value,
+          }));
         }}
       />
 
       <TextButton
         color="light"
         moreStyle="w-[250px] h-[45px] leading-[45px] text-lg mb-6 absolute bottom-4 right-24"
-        handleClick={() => {
-          console.log('저장');
+        handleClick={async () => {
+          try {
+            const response = await enrollGroup({
+              title: groupData.title,
+              desc: groupData.desc,
+            });
+            setGroupId(response.data.groupId);
+            navigate(`/group/${groupId}`);
+          } catch (e) {
+            console.log(e);
+          }
         }}
       >
         저장

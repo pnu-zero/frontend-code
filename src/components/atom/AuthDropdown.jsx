@@ -1,11 +1,19 @@
 import { useState } from 'react';
 import { BsCaretDownFill } from 'react-icons/bs';
 
-function AuthDropdown({ type }) {
+function AuthDropdown({ type, auth, memberIndex, setMemberData }) {
   const [isOpen, setIsOpen] = useState(false);
   const groupList = ['소유자', '멤버'];
   const projectList = ['Admin', 'Write', 'Read'];
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    if (type === 'group') {
+      if (auth === '소유자') return 0;
+      return 1;
+    }
+    if (auth === 'Admin') return 0;
+    if (auth === 'Write') return 1;
+    return 2;
+  });
   if (type === 'group')
     return (
       <div className="relative w-[100px] h-[30px] leading-[30px] border-solid border-[2px] border-pcDarkGray rounded-xl text-left">
@@ -33,6 +41,11 @@ function AuthDropdown({ type }) {
                   onClick={() => {
                     setSelectedIndex(index);
                     setIsOpen(false);
+                    setMemberData((prev) => {
+                      const tempMemberData = [...prev];
+                      tempMemberData[memberIndex].auth = groupList[index];
+                      return tempMemberData;
+                    });
                   }}
                   className="relative z-10"
                 >
@@ -73,6 +86,11 @@ function AuthDropdown({ type }) {
                   onClick={() => {
                     setSelectedIndex(index);
                     setIsOpen(false);
+                    setMemberData((prev) => {
+                      const tempMemberData = [...prev];
+                      tempMemberData[memberIndex].auth = projectList[index];
+                      return tempMemberData;
+                    });
                   }}
                   className="relative z-10"
                 >

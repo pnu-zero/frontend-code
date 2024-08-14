@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { BsFillInboxesFill, BsCaretDownFill } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
-function GroupCard({ children }) {
+function GroupCard({ groupName, groupId, children }) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="relative">
@@ -9,13 +11,13 @@ function GroupCard({ children }) {
         type="button"
         className="mx-auto block my-2"
         onClick={() => {
-          console.log('그룹 열기');
+          navigate(`/group/${groupId}`);
         }}
       >
         <div className="w-[280px] h-[45px] rounded-xl bg-pcSky flex items-center justify-between  mx-auto">
           <div className="flex items-center">
             <BsFillInboxesFill size="1.2rem" className="ml-6" />
-            <span className="font-bold text-lg ml-2">그룹 1</span>
+            <span className="font-bold text-lg ml-2">{groupName}</span>
           </div>
         </div>
       </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BsBox } from 'react-icons/bs';
 import { BiSolidPencil } from 'react-icons/bi';
 import ContainorBox from '../molecules/ContainorBox';
@@ -8,12 +8,30 @@ import InputBox from '../atom/InputBox';
 import MemberManagement from '../organisms/MemberManagement';
 
 function ProjectPage() {
+  const navigate = useNavigate();
+  const { groupId } = useParams();
   const { projectId } = useParams();
   const [titleEdit, setTitleEdit] = useState(false);
   const [descEdit, setDescEdit] = useState(false);
-  console.log(projectId);
+  const [memberData, setMemberData] = useState([
+    {
+      name: '김선우',
+      email: 'ttcoristory@Navre.com',
+      auth: 'Admin',
+    },
+    {
+      name: '김선우',
+      email: 'ttcoristory@Navre.com',
+      auth: 'Read',
+    },
+    {
+      name: '김선우',
+      email: 'ttcoristory@Navre.com',
+      auth: 'Write',
+    },
+  ]);
   return (
-    <div className="flex flex-col w-[1280px] h-[850px] mx-auto relative">
+    <div className="flex flex-col w-[1280px]  mx-auto relative">
       <div className="flex items-center justify-between mt-24">
         <div className="flex items-center ml-12">
           <BsBox size="1.3rem" className="leading-[1.3rem] mr-3" />
@@ -58,7 +76,7 @@ function ProjectPage() {
           moreStyle="w-[140px] h-[35px] rounded-xl mr-24"
           color="dark"
           handleClick={() => {
-            console.log('컨테이너 관리');
+            navigate(`/group/${groupId}/project/${projectId}/containor`);
           }}
         >
           <span className="text-white text-md leading-[35px]">
@@ -95,14 +113,16 @@ function ProjectPage() {
         )}
       </div>
       {descEdit ? (
-        <textarea
-          type="text"
-          placeholder="프로젝트 설명을 적어주세요"
-          className="block px-4 py-3 outline-none rounded-lg w-[900px] h-[250px] ml-12 mt-2 text-xl font-medium border-pcGray border-solid border-[2px]"
-          onChange={() => {
-            console.log('프로젝트 설명을 적어주세요');
-          }}
-        />
+        <div>
+          <textarea
+            type="text"
+            placeholder="프로젝트 설명을 적어주세요"
+            className="block px-4 py-3 outline-none rounded-lg w-[900px] h-[250px] ml-12 mt-2 text-xl font-medium border-pcGray border-solid border-[2px]"
+            onChange={() => {
+              console.log('프로젝트 설명을 적어주세요');
+            }}
+          />
+        </div>
       ) : (
         <span className="w-[900px] ml-12 mt-2 text-xl font-medium">
           우리 프로젝트는 다양한 배경과 전문성을 가진 [팀 구성원 수]명의
@@ -114,7 +134,12 @@ function ProjectPage() {
 
       <span className="font-bold text-xl ml-12 mt-12">프로젝트 멤버</span>
       <div className="ml-12 mt-1">
-        <MemberManagement type="project" />
+        <MemberManagement
+          type="project"
+          memberData={memberData}
+          groupId={groupId}
+          setMemberData={setMemberData}
+        />
       </div>
 
       <span className="font-bold text-xl ml-12 mt-12">컨테이너</span>

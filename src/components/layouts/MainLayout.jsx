@@ -1,10 +1,11 @@
 import { AiOutlineSetting } from 'react-icons/ai';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Navigation from './Navigation';
 
 function MainLayout() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   return (
     <div className="w-[1610px] h-[100vh] relative flex">
       <div className="absolute flex top-4 right-24 items-center">
@@ -30,6 +31,9 @@ function MainLayout() {
             <button
               type="button"
               className="absolute block w-[75px] leading-[25px] border-pcDarkGray border-solid border-[1px] rounded-lg top-14 right-0  z-10"
+              onClick={() => {
+                navigate('/my-profile');
+              }}
             >
               내정보
             </button>
