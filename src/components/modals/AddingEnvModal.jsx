@@ -1,8 +1,15 @@
 import ReactModal from 'react-modal';
+import { useState } from 'react';
 import InputBox from '../atom/InputBox';
 import TextButton from '../atom/TextButton';
 
-function AddingEnvModal({ modalOpen, setModalOpen }) {
+function AddingEnvModal({
+  modalOpen,
+  setModalOpen,
+  savedEnvs,
+  setContainorsData,
+  containorIndex,
+}) {
   /* overlay는 모달 창 바깥 부분을 처리하는 부분이고,
   content는 모달 창부분이라고 생각하면 쉬울 것이다 */
   const customModalStyles = {
@@ -31,6 +38,10 @@ function AddingEnvModal({ modalOpen, setModalOpen }) {
     },
   };
 
+  const [envData, setEnvData] = useState({
+    name: '',
+    key: '',
+  });
   return (
     <ReactModal
       isOpen={modalOpen}
@@ -51,8 +62,11 @@ function AddingEnvModal({ modalOpen, setModalOpen }) {
             placeholder="이름 *"
             isError={false}
             moreStyle="w-[400px] h-[30px]"
-            onChange={() => {
-              console.log('이메일 변경');
+            onChange={(e) => {
+              setEnvData((prev) => ({
+                ...prev,
+                name: e.target.value,
+              }));
             }}
           />
           <span className="font-bold text-lg leading-[30px] mr-4 mt-4">
@@ -63,8 +77,11 @@ function AddingEnvModal({ modalOpen, setModalOpen }) {
             type="password"
             placeholder="환경변수 *"
             className="block px-4 py-3 outline-none rounded-lg w-[400px] h-[100px] text-xl font-medium border-pcGray border-solid border-[2px]"
-            onChange={() => {
-              console.log('비밀번호 재 확인');
+            onChange={(e) => {
+              setEnvData((prev) => ({
+                ...prev,
+                key: e.target.value,
+              }));
             }}
           />
         </div>
@@ -72,7 +89,32 @@ function AddingEnvModal({ modalOpen, setModalOpen }) {
           <TextButton
             moreStyle="w-[100px] h-[25px] leading-[25px] rounded-xl mr-2"
             color="dark"
-            handleClick={() => {
+            handleClick={(e) => {
+              // 서버에 데이터 전달 성공하면 상태 값 반영
+              setContainorsData((prev) => {
+                const tempContainorData = prev.map(
+                  (
+                    {
+                      templateTitle,
+                      containorStack,
+                      subdomain,
+                      envVars,
+                      containorFile,
+                      defaultSubDomain,
+                    },
+                    tempIndex,
+                  ) => ({
+                    templateTitle,
+                    containorStack,
+                    subdomain,
+                    envVars: envVars.map((item) => ({ ...item })), // 배열 깊은 복사
+                    containorFile,
+                    defaultSubDomain,
+                  }),
+                );
+                tempContainorData[containorIndex].envVars.push(envData.name);
+                return tempContainorData;
+              });
               setModalOpen(false);
             }}
           >

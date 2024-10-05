@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { BsFillInboxesFill, BsCaretDownFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 
-function GroupCard({ groupName, groupId, children }) {
+function GroupCard({ groupName, groupId, groupAuthority, children }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="relative">
       <button
         type="button"
         className="mx-auto block my-2"
         onClick={() => {
-          navigate(`/group/${groupId}`);
+          navigate(
+            `/group/${groupId}?isOwner=${groupAuthority === 'OWNER' || groupAuthority === 'ADMIN'}`,
+          );
         }}
       >
         <div className="w-[280px] h-[45px] rounded-xl bg-pcSky flex items-center justify-between  mx-auto">

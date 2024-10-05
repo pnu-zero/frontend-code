@@ -1,8 +1,8 @@
 import ReactModal from 'react-modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputBox from '../atom/InputBox';
 import TextButton from '../atom/TextButton';
-import { inviteGroupMember } from '../../apis/group';
+import { getGroupById, inviteGroupMember } from '../../apis/group';
 
 function AddingMemberModal({
   modalOpen,
@@ -24,7 +24,7 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
     },
     content: {
       width: '360px',
-      height: '180px',
+      height: '230px',
       zIndex: '150',
       position: 'absolute',
       top: '50%',
@@ -39,6 +39,11 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
   };
 
   const [email, setEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    setErrorMessage('');
+  }, []);
   return (
     <ReactModal
       isOpen={modalOpen}
@@ -55,10 +60,12 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
           <InputBox
             type="email"
             placeholder="이메일 *"
-            isError={false}
-            moreStyle="w-[220px] h-[30px]"
+            isError={errorMessage !== ''}
+            errorMessage={errorMessage}
+            moreStyle="w-[220px] leading-[30px]"
             onChange={(e) => {
               setEmail(e.target.value);
+              if (e.target.value === '') setErrorMessage('');
             }}
           />
         </div>
@@ -68,18 +75,12 @@ content는 모달 창부분이라고 생각하면 쉬울 것이다 */
             color="dark"
             handleClick={async () => {
               try {
-                const { data } = await inviteGroupMember(groupId, email); // 비동기 작업이 완료될 때까지 대기
-                setMemberData((prev) => {
-                  const tempMemberData = [...prev];
-                  tempMemberData.push({
-                    name: data.name,
-                    email: data.email,
-                    auth: '멤버',
-                  });
-                  return tempMemberData;
-                });
+                await inviteGroupMember(groupId, email); // 비동기 작업이 완료될 때까지 대기
+                const { data } = await getGroupById(groupId);
+                setMemberData(data.data.groupParticipants);
                 setModalOpen(false); // 작업이 완료된 후 모달 닫기
               } catch (e) {
+                setErrorMessage('초대에 실패하였습니다');
                 console.log(e); // 오류 처리
               }
             }}

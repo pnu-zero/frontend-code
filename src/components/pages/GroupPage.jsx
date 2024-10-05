@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BsFillInboxesFill } from 'react-icons/bs';
 import { BiSolidPencil } from 'react-icons/bi';
 import TextButton from '../atom/TextButton';
 import InputBox from '../atom/InputBox';
 import MemberManagement from '../organisms/MemberManagement';
+import { getGroupById } from '../../apis/group';
 
 function GroupPage() {
   const { groupId } = useParams();
+  const [searchParams] = useSearchParams();
+  const [isGroupOwner, setIsGroupOwner] = useState(
+    searchParams.get('isOwner') === 'true',
+  );
   const navigate = useNavigate();
   const [titleEdit, setTitleEdit] = useState(false);
   const [descEdit, setDescEdit] = useState(false);
@@ -15,25 +20,25 @@ function GroupPage() {
     title: '',
     desc: '',
   });
-  const [memberData, setMemberData] = useState([
-    {
-      name: '김선우',
-      email: 'ttcoristory@Navre.com',
-      auth: '소유자',
-    },
-    {
-      name: '김선우',
-      email: 'ttcoristory@Navre.com',
-      auth: '소유자',
-    },
-    {
-      name: '김선우',
-      email: 'ttcoristory@Navre.com',
-      auth: '소유자',
-    },
-  ]);
+  const [memberData, setMemberData] = useState([]);
 
-  console.log(groupId);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await getGroupById(groupId);
+        setGroupData({
+          title: data.data.groupName,
+          desc: data.data.groupDescription,
+        });
+        setMemberData(data.data.groupParticipants);
+        setIsGroupOwner(searchParams.get('isOwner') === 'true');
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchData();
+  }, [groupId]);
 
   return (
     <div className="flex flex-col w-[1280px] h-[850px] mx-auto relative">
@@ -45,7 +50,8 @@ function GroupPage() {
               type="text"
               placeholder="그룹 명 *"
               isError={false}
-              moreStyle="w-[400px] h-[40px] mr-2"
+              moreStyle="w-[400px] laeding-[40px] mr-2 font-bold"
+              textMoreStyle="py-[2px]"
               onChange={(e) => {
                 setGroupData((prev) => ({
                   ...prev,
@@ -57,7 +63,7 @@ function GroupPage() {
           ) : (
             <span className="font-bold text-2xl mr-2">{groupData.title}</span>
           )}
-          {titleEdit || (
+          {titleEdit || !isGroupOwner || (
             <button
               type="button"
               aria-label="그룹 제목 수정"
@@ -96,7 +102,7 @@ function GroupPage() {
       <hr className="w-[1136px] mx-auto mr-24 h-[3px] bg-pcLightBlack mt-2" />
       <div className="flex items-center ml-12 mt-8">
         <span className="font-bold text-xl mr-2">그룹 설명</span>
-        {descEdit || (
+        {descEdit || !isGroupOwner || (
           <button
             type="button"
             aria-label="그룹 설명 수정"

@@ -1,111 +1,118 @@
 import { useRef } from 'react';
-import { AiFillFile } from 'react-icons/ai';
-import TextButton from './TextButton';
+import { AiOutlineCloudUpload } from 'react-icons/ai';
 
-function UploadBox({ files, setFiles }) {
+function UploadBox({ setContainorsData, containorIndex, isExistContainer }) {
   const clientFileRef = useRef();
-  const clientFileModificationRef = useRef();
 
-  const saveFile2 = () => {
+  const saveFile = () => {
     const curFile = clientFileRef.current.files[0];
 
     if (curFile) {
       // 파일 보내기 성공하면 상태 값 변경
 
-      setFiles((prev) => ({
-        staticFiles: [...prev.staticFiles, curFile],
-        staticFilesName: [...prev.staticFilesName, curFile.name],
-      }));
+      setContainorsData((prev) => {
+        const tempContainorData = prev.map(
+          (
+            {
+              templateTitle,
+              containorStack,
+              subdomain,
+              envVars,
+              containorFile,
+              defaultSubDomain,
+            },
+            tempIndex,
+          ) => ({
+            templateTitle,
+            containorStack,
+            subdomain,
+            envVars: envVars.map((item) => ({ ...item })), // 배열 깊은 복사
+            containorFile, // 배열 깊은 복사
+            defaultSubDomain,
+          }),
+        );
+
+        tempContainorData[containorIndex].containorFile = curFile;
+
+        return tempContainorData;
+      });
     }
   };
 
-  const modifyFile2 = () => {
-    const curFile = clientFileModificationRef.current.files[0];
-    if (curFile) {
-      // 파일 보내기 성공하면 상태 값 변경
+  const deleteFile = (fileIndex) => {
+    setContainorsData((prev) => {
+      const tempContainorData = prev.map(
+        (
+          {
+            templateTitle,
+            containorStack,
+            subdomain,
+            envVars,
+            containorFiles,
+            defaultSubDomain,
+          },
+          tempIndex,
+        ) => {
+          if (containorIndex === tempIndex) containorFiles.splice(fileIndex, 1); // 제거
+          return {
+            templateTitle,
+            containorStack,
+            subdomain,
+            envVars: envVars.map((item) => ({ ...item })), // 배열 깊은 복사
+            containorFiles: [...containorFiles], // 배열 깊은 복사
+            defaultSubDomain,
+          };
+        },
+      );
 
-      setFiles((prev) => ({
-        ...prev,
-        staticFile: curFile,
-        staticFileName: curFile.name,
-      }));
-    }
+      return tempContainorData;
+    });
   };
+
+  if (isExistContainer)
+    return (
+      <div>
+        <div className="flex flex-col items-center justify-center w-[800px] h-[150px] border-dashed border-[2.5px] border-pcDarkGray rounded-xl pb-4">
+          <AiOutlineCloudUpload size="1.8rem" />
+          <div className="font-bold mt-2 text-lg">
+            파일이 업로드 되어있습니다.
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div>
-      <div className="w-[400px] h-[200px] border-solid border-[1.5px] border-pcDarkGray rounded-xl overflow-auto overflow-x-hidden">
-        <div className="flex justify-center h-[30px] items-center my-2">
-          <span className="font-bold text-xl mr-8 leading-[20px] w-[300px] text-center">
-            파일 업로드
-          </span>
-          <label htmlFor="js2" className="mb-2" aria-label="파일 수정">
-            <div className="bg-pcLightGray hover:bg-pcGray text-md  border-pcDaryGray border-solid border-[1px] text-pcLightBlack text-center  font-bold w-[90px] leading-[25px] rounded-xl mr-8">
-              <span className="">추가</span>
+      <div className="flex flex-col items-center justify-center w-[800px] h-[150px] border-dashed border-[2.5px] border-pcDarkGray rounded-xl pb-4">
+        <AiOutlineCloudUpload size="1.8rem" />
+        <div>
+          <div className="text-center">
+            <span className="font-bold text-md text-center">
+              Drag and Drop &ldquo;Code File&rdquo; here
+            </span>
+          </div>
+          <div className="text-center mb-2">
+            <span className="font-bold text-md  text-center">or</span>
+          </div>
+          <label
+            htmlFor={`upload${containorIndex}`}
+            className=""
+            aria-label="파일 수정"
+          >
+            <div className="text-center">
+              <span className="px-8 py-1 bg-[#EA991F] hover:bg-[#EA991F]/80 text-md  text-white text-center rounded-xl leading-[25px]">
+                Select file
+              </span>
             </div>
           </label>
           <input
-            id="js2"
+            id={`upload${containorIndex}`}
             className="hidden"
             type="file"
             accept=".zip,.tar"
             ref={clientFileRef}
-            onChange={saveFile2}
+            onChange={saveFile}
           />
-        </div>
-        <hr className="w-[400px] bg-pcGray " />
-        <div className="w-full">
-          {files.staticFiles.length !== 0 ? (
-            files.staticFilesName.map((name, index) => (
-              <div>
-                <div className="flex items-center w-[400px] h-[80px]">
-                  <div className="flex flex-col w-[300px] items-center mr-8 ">
-                    <div>
-                      <AiFillFile size="40px" color="black" />
-                    </div>
-                    <span className="text-md text-black text-center overflow-hidden">
-                      {name}
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    <input
-                      id="clientFileModification"
-                      className="hidden"
-                      type="file"
-                      accept=".zip,.tar"
-                      ref={clientFileModificationRef}
-                      onChange={modifyFile2}
-                    />
-                    <TextButton
-                      moreStyle="w-[90px] leading-[25px] rounded-xl mr-8"
-                      color="dark"
-                      handleClick={() => {
-                        setFiles((prev) => {
-                          const updatedStaticFiles = prev.staticFiles.filter(
-                            (_, tempIndex) => tempIndex !== index,
-                          );
-                          const updatedStaticFilesName =
-                            prev.staticFilesName.filter(
-                              (_, tempIndex) => tempIndex !== index,
-                            );
-
-                          return {
-                            staticFiles: updatedStaticFiles,
-                            staticFilesName: updatedStaticFilesName,
-                          };
-                        });
-                      }}
-                    >
-                      삭제
-                    </TextButton>
-                  </div>
-                </div>
-                <hr className="w-[400px] bg-pcGray " />
-              </div>
-            ))
-          ) : (
-            <div className="w-full text-center" />
-          )}
         </div>
       </div>
     </div>

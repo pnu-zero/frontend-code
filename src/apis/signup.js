@@ -1,33 +1,16 @@
 import instance from './instance';
 
-const signup = () => {
-  instance
-    .post('/auth/sign-up', {
-      email: 'yungs0917@naver.com',
-      username: 'seunghun',
-      password: 'password',
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+const signup = (payload) =>
+  instance.post('/auth/sign-up', {
+    email: payload.email,
+    username: payload.username,
+    password: payload.password,
+  });
 
 export default signup;
 
-export const getValidCheck = (payload, setValidCheck) => {
-  instance
-    .post('/email/check-valid', {
-      email: payload.email,
-      code: payload.code,
-    })
-    .then((response) => {
-      console.log(response);
-      setValidCheck(true);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+export const getEmailCheckCode = (payload) =>
+  instance.get(`/email/get-code?email=${payload.email}`);
+
+export const getValidCheck = (payload) =>
+  instance.get(`/email/check-valid?code=${payload.code}`);

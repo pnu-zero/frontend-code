@@ -17,7 +17,7 @@ function TextButton({
         disabled={disabled}
       >
         <div
-          className={`bg-pcLightGray hover:bg-pcGray text-md rounded-2xl border-pcDaryGray border-solid border-[1px] text-pcLightBlack text-center ${moreStyle} font-bold`}
+          className={`  text-md rounded-2xl border-pcDarkGray border-solid border-[1px] text-pcLightBlack text-center ${moreStyle} font-bold ${disabled ? 'bg-pcDisabledLightGray' : 'bg-pcLightGray hover:bg-pcGray'}`}
         >
           {children}
         </div>

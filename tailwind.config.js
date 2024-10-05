@@ -9,9 +9,10 @@ module.exports = {
       colors: {
         pcBlack: '#212A2A',
         pcLightBlack: '#3D3D3D',
-        pcGray: '#F6F6F6',
-        pcDaryGray: '#DFE0E7',
+        pcGray: '#D9D9D9',
+        pcDarkGray: '#DFE0E7',
         pcLightGray: '#F7F8FA',
+        pcDisabledLightGray: '#E0E1E5',
         pcSky: '#F3F7FF',
         pcLightBlue: '#FBFCFE',
       },

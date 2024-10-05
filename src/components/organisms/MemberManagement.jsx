@@ -5,7 +5,43 @@ import Member from '../molecules/Member';
 
 function MemberManagement({ type, memberData, groupId, setMemberData }) {
   const [modalOpen, setModalOpen] = useState(false);
-  console.log(memberData);
+
+  if (type === 'project')
+    return (
+      <div className="w-[530px] h-[370px] border-solid border-[2px] border-pcDarkGray rounded-xl relative">
+        <AddingMemberModal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          groupId={groupId}
+          setMemberData={setMemberData}
+        />
+        <div className="flex flex-col w-[530px] h-[300px] overflow-y-auto">
+          <div className="w-full h-[30px] leading-[30px] flex">
+            <span className="font-bold text-md w-[100px] ml-[20px] text-center">
+              이름
+            </span>
+            <span className="font-bold text-md w-[280px] text-center">
+              이메일
+            </span>
+            <span className="font-bold text-md w-[110px] text-center">
+              권한
+            </span>
+          </div>
+          <hr className="w-[450px] mx-auto  h-[1.5px] bg-pcGray my-1" />
+          {memberData.map((member, index) => (
+            <Member
+              key={member.id}
+              type={type}
+              member={member}
+              memberIndex={index}
+              setMemberData={setMemberData}
+              groupId={groupId}
+            />
+          ))}
+        </div>
+      </div>
+    );
+
   return (
     <div className="w-[680px] h-[370px] border-solid border-[2px] border-pcDarkGray rounded-xl relative">
       <AddingMemberModal
@@ -28,11 +64,12 @@ function MemberManagement({ type, memberData, groupId, setMemberData }) {
         <hr className="w-[550px] mx-auto  h-[1.5px] bg-pcGray my-1" />
         {memberData.map((member, index) => (
           <Member
-            key={member.email}
+            key={member.participantId}
             type={type}
             member={member}
             memberIndex={index}
             setMemberData={setMemberData}
+            groupId={groupId}
           />
         ))}
       </div>

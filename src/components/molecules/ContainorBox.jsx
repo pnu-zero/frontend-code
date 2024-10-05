@@ -1,41 +1,144 @@
 import { useState } from 'react';
-// import { BsCaretDownFill } from 'react-icons/bs';
-import ReactImg from '../../assets/ReactImg.png';
 
-function ContainorBox({ type }) {
-  // const [isOpen, setIsOpen] = useState(false);
-  const [selectedIndex] = useState(0);
-  const versions = ['React 18.0.2', 'React 18.0', 'React 16.0.2'];
-  if (type === 'view')
-    return (
-      <div>
-        <div className="w-[350px] border-solid border-[1.5px] border-pcDarkGray rounded-xl hover:border-blue-300">
-          <div className="flex flex-col items-center">
-            <img src={ReactImg} alt="대표이미지" className="mt-1" />
-            <span className="font-bold text-md">React</span>
-            <hr className="w-[300px] mx-auto bg-pcDarkGray mt-1" />
-            <span className="text-pcDaryGray text-md mr-1  mt-1">
-              {versions[selectedIndex]}
-            </span>
-            <span className="font-bold text-md  mt-1">
-              testfrontend.pusan.ac.kr
-            </span>
-            <span className="font-bold text-lg  mb-1">
-              테스트-프론트엔드-컨테이너
-            </span>
-          </div>
-        </div>
-      </div>
-    );
+function ContainorBox({
+  setContainorsData,
+  stackName,
+  stackImg,
+  isExistContainer,
+}) {
+  const [representVersions] = useState(() => {
+    if (stackName === 'React') {
+      return 'React 18.0.2';
+    }
+    if (stackName === 'Vue.js') {
+      return 'Vue2';
+    }
+    if (stackName === 'HTML5') {
+      return 'HTML5';
+    }
+    if (stackName === 'Angular') {
+      return 'Angular17';
+    }
+    if (stackName === 'Next.js') {
+      return 'Next.js14';
+    }
+
+    if (stackName === 'Node.js') {
+      return 'Node.js20';
+    }
+    if (stackName === 'Spring Boot') {
+      return 'Spring Boot6.0';
+    }
+    if (stackName === 'PHP') {
+      return 'PHP7.0';
+    }
+    if (stackName === 'Flask') {
+      return 'Flask3.6';
+    }
+    if (stackName === 'FastAPI') {
+      return 'FastAPI';
+    }
+
+    if (stackName === 'MYSQL') {
+      return 'MYSQL';
+    }
+    if (stackName === 'PostgreSQL') {
+      return 'PostgreSQL';
+    }
+    if (stackName === 'MongoDB') {
+      return 'MongoDB';
+    }
+    if (stackName === 'SQLite') {
+      return 'SQLite';
+    }
+
+    if (stackName === 'Console') {
+      return 'Console';
+    }
+    return '';
+  });
+
+  console.log(isExistContainer);
+
   return (
-    <div>
-      <div className="w-[350px] h-[120px] border-solid border-[1.5px] border-pcDarkGray rounded-xl hover:border-blue-300">
+    <button
+      type="button"
+      onClick={() => {
+        setContainorsData((prev) => {
+          const tempContainorData = prev.map(
+            ({
+              templateTitle,
+              containorStack,
+              subdomain,
+              envVars,
+              containorFile,
+              defaultSubDomain,
+            }) => ({
+              templateTitle,
+              containorStack,
+              subdomain,
+              envVars: envVars.map((item) => ({ ...item })), // 배열 깊은 복사
+              containorFile,
+              defaultSubDomain,
+            }),
+          );
+
+          let id = Math.max(
+            ...tempContainorData.map((container) => container.containerId),
+          );
+
+          if (id === -Infinity) id = 1;
+
+          if (
+            stackName === 'MYSQL' ||
+            stackName === 'PostgreSQL' ||
+            stackName === 'MongoDB' ||
+            stackName === 'SQLite'
+          ) {
+            tempContainorData.push({
+              containerId: id * -1,
+              templateTitle: '',
+              containorStack: representVersions,
+              subdomain: '',
+              envVars: [
+                {
+                  id: -1,
+                  key: '기본 키',
+                  value: '',
+                },
+              ],
+              containorFile: null,
+              defaultSubDomain: false,
+            });
+          } else
+            tempContainorData.push({
+              containerId: id * -1,
+              templateTitle: '',
+              containorStack: representVersions,
+              subdomain: '',
+              envVars: [],
+              containorFile: null,
+              defaultSubDomain: false,
+            });
+
+          return tempContainorData;
+        });
+      }}
+      disabled={isExistContainer}
+    >
+      <div
+        className={`w-[350px] h-[120px] border-solid border-[1.5px] border-pcDarkGray rounded-xl ${isExistContainer ? '' : 'hover:border-blue-300'}`}
+      >
         <div className="flex flex-col items-center">
-          <img src={ReactImg} alt="대표이미지" className="mt-1" />
-          <span className="font-bold text-md">React</span>
+          <img
+            src={stackImg}
+            alt="대표이미지"
+            className="mt-1 w-[59px] min-h-[59px]"
+          />
+          <span className="font-bold text-md">{stackName}</span>
           <hr className="w-[300px] mx-auto bg-pcDarkGray mt-1" />
           {/* <div className="flex my-3">
-            <span className="text-pcDaryGray text-md mr-1">
+            <span className="text-pcDarkGray text-md mr-1">
               {versions[selectedIndex]}
             </span>
             <button
@@ -72,7 +175,7 @@ function ContainorBox({ type }) {
             })} */}
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 

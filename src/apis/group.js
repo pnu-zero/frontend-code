@@ -2,26 +2,31 @@ import instance from './instance';
 
 const enrollGroup = (payload) =>
   instance.post('/group', {
-    title: payload.title,
-    dedc: payload.desc,
+    groupName: payload.title,
+    groupDescription: payload.desc,
   });
 export default enrollGroup;
 
-export const inviteGroupMember = (groupId, payload) =>
+export const inviteGroupMember = (groupId, email) =>
   instance.post(`/group/invite-member`, {
     groupId,
-    email: payload.email,
+    email,
   });
 
-export const deleteGroupMember = (groupId, payload) => {
-  instance
-    .post(`/group/${groupId}/invite-member`, {
-      email: payload.email,
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+export const getGroupById = (groupId) =>
+  instance.get(`/group/dashboard?groupId=${groupId}`);
+
+export const getMyGroupsAndProjects = () =>
+  instance.get(`/user/get-user-nav-list`);
+
+export const changeGroupMemberAuth = (groupId, username, role) =>
+  instance.post(`/group/change-member-role`, {
+    groupId,
+    username,
+    role,
+  });
+
+export const deleteGroupMember = (groupId, username) =>
+  instance.delete(
+    `/group/delete-member?groupId=${groupId}&username=${username}`,
+  );
