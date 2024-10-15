@@ -11,6 +11,11 @@ function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  console.log(
+    localStorage.getItem('jwt'),
+    localStorage.getItem('jwt') === null ||
+      localStorage.getItem('jwt') === undefined,
+  );
   // '/' 경로인 경우 다른 컴포넌트를 반환
   if (location.pathname === '/') {
     return (
@@ -21,15 +26,18 @@ function MainLayout() {
         <header className="absolute top-0 left-0 w-full bg-white shadow-md p-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-700">PNU CLOUD</h1>
           <div className="flex space-x-4">
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-              type="button"
-              onClick={() => {
-                navigate('/login');
-              }}
-            >
-              로그인
-            </button>
+            {localStorage.getItem('jwt') === 'null' ||
+            localStorage.getItem('jwt') === undefined ? (
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                type="button"
+                onClick={() => {
+                  navigate('/login');
+                }}
+              >
+                로그인
+              </button>
+            ) : null}
             <button
               className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
               type="button"
@@ -48,6 +56,18 @@ function MainLayout() {
           이 웹 애플리케이션은 학생들이 비용 부담 없이 프로젝트를 배포하고
           운영할 수 있는 플랫폼을 제공합니다.
         </p>
+        {localStorage.getItem('jwt') === 'null' ||
+        localStorage.getItem('jwt') === undefined ? null : (
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            type="button"
+            onClick={() => {
+              navigate('/home');
+            }}
+          >
+            시작하기
+          </button>
+        )}
       </div>
     );
   }
@@ -72,7 +92,7 @@ function MainLayout() {
               type="button"
               className="absolute block w-[75px] leading-[25px] border-pcDarkGray border-solid border-[1px] rounded-lg top-7 right-0 z-10"
               onClick={async () => {
-                navigate('/login');
+                navigate('/');
                 localStorage.setItem('jwt', null);
                 instance.defaults.headers.common.Authorization = null;
                 window.location.reload();

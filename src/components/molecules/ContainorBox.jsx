@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ContainerModal from '../modals/ContainerModal';
 
 function ContainorBox({
   setContainorsData,
@@ -58,86 +59,94 @@ function ContainorBox({
     return '';
   });
 
-  console.log(isExistContainer);
-
+  const [isOpenContainerDescModal, setIsOpenContainerDescModal] =
+    useState(false);
   return (
-    <button
-      type="button"
-      onClick={() => {
-        setContainorsData((prev) => {
-          const tempContainorData = prev.map(
-            ({
-              templateTitle,
-              containorStack,
-              subdomain,
-              envVars,
-              containorFile,
-              defaultSubDomain,
-            }) => ({
-              templateTitle,
-              containorStack,
-              subdomain,
-              envVars: envVars.map((item) => ({ ...item })), // 배열 깊은 복사
-              containorFile,
-              defaultSubDomain,
-            }),
-          );
+    <div>
+      <ContainerModal
+        modalOpen={isOpenContainerDescModal}
+        setModalOpen={setIsOpenContainerDescModal}
+        message="설명임"
+      />
+      <button
+        type="button"
+        onClick={() => {
+          setIsOpenContainerDescModal(true);
+          console.log(setIsOpenContainerDescModal);
+          setContainorsData((prev) => {
+            const tempContainorData = prev.map(
+              ({
+                templateTitle,
+                containorStack,
+                subdomain,
+                envVars,
+                containorFile,
+                defaultSubDomain,
+              }) => ({
+                templateTitle,
+                containorStack,
+                subdomain,
+                envVars: envVars.map((item) => ({ ...item })), // 배열 깊은 복사
+                containorFile,
+                defaultSubDomain,
+              }),
+            );
 
-          let id = Math.max(
-            ...tempContainorData.map((container) => container.containerId),
-          );
+            let id = Math.max(
+              ...tempContainorData.map((container) => container.containerId),
+            );
 
-          if (id === -Infinity) id = 1;
+            if (id === -Infinity) id = 1;
 
-          if (
-            stackName === 'MYSQL' ||
-            stackName === 'PostgreSQL' ||
-            stackName === 'MongoDB' ||
-            stackName === 'SQLite'
-          ) {
-            tempContainorData.push({
-              containerId: id * -1,
-              templateTitle: '',
-              containorStack: representVersions,
-              subdomain: '',
-              envVars: [
-                {
-                  id: -1,
-                  key: '기본 키',
-                  value: '',
-                },
-              ],
-              containorFile: null,
-              defaultSubDomain: false,
-            });
-          } else
-            tempContainorData.push({
-              containerId: id * -1,
-              templateTitle: '',
-              containorStack: representVersions,
-              subdomain: '',
-              envVars: [],
-              containorFile: null,
-              defaultSubDomain: false,
-            });
+            if (
+              stackName === 'MYSQL' ||
+              stackName === 'PostgreSQL' ||
+              stackName === 'MongoDB' ||
+              stackName === 'SQLite'
+            ) {
+              tempContainorData.push({
+                containerId: id * -1,
+                templateTitle: '',
+                containorStack: representVersions,
+                subdomain: '',
+                envVars: [
+                  {
+                    id: -1,
+                    key: '기본 키',
+                    value: '',
+                  },
+                ],
+                containorFile: null,
+                defaultSubDomain: false,
+              });
+            } else
+              tempContainorData.push({
+                containerId: id * -1,
+                templateTitle: '',
+                containorStack: representVersions,
+                subdomain: '',
+                envVars: [],
+                containorFile: null,
+                defaultSubDomain: false,
+              });
 
-          return tempContainorData;
-        });
-      }}
-      disabled={isExistContainer}
-    >
-      <div
-        className={`w-[350px] h-[120px] border-solid border-[1.5px] border-pcDarkGray rounded-xl ${isExistContainer ? '' : 'hover:border-blue-300'}`}
+            return tempContainorData;
+          });
+        }}
+        disabled={isExistContainer}
       >
-        <div className="flex flex-col items-center">
-          <img
-            src={stackImg}
-            alt="대표이미지"
-            className="mt-1 w-[59px] min-h-[59px]"
-          />
-          <span className="font-bold text-md">{stackName}</span>
-          <hr className="w-[300px] mx-auto bg-pcDarkGray mt-1" />
-          {/* <div className="flex my-3">
+        <div
+          className={`w-[350px] h-[120px] border-solid border-[1.5px] border-pcDarkGray rounded-xl ${isExistContainer ? '' : 'hover:border-blue-300'}`}
+        >
+          <div className="flex flex-col items-center">
+            <img
+              src={stackImg}
+              alt="대표이미지"
+              className="mt-1 w-[59px] min-h-[59px]"
+            />
+            <span className="font-bold text-md">{stackName}</span>
+            <hr className="w-[300px] mx-auto bg-pcDarkGray mt-1" />
+            {/* <div className="flex my-3">
             <span className="text-pcDarkGray text-md mr-1">
               {versions[selectedIndex]}
             </span>
@@ -173,9 +182,10 @@ function ContainorBox({
                 );
               return '';
             })} */}
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+    </div>
   );
 }
 

@@ -180,80 +180,96 @@ function ContainorDetailBox({
           setContainorsData={setContainorsData}
           containorIndex={containorIndex}
         /> */}
-        <div className="flex items-center justify-between h-[80px]">
-          <div className="flex items-center ml-8">
-            <button
-              type="button"
-              aria-label="권한 수정"
-              onClick={() => {
-                setIsOpen((prev) => !prev);
-                if (isOpen === true) {
-                  setIsVersionOpen(false);
-                }
-              }}
-            >
-              <BsCaretDownFill
-                className={` ${isOpen ? 'rotate-0' : 'rotate-[-90deg]'}`}
-                size="1.5rem"
-              />
-            </button>
-            <InputBox
-              type="text"
-              placeholder="제목을 입력해주세요 *"
-              defaultValue={containorData.templateTitle}
-              isError={false}
-              moreStyle="w-[600px] mx-2 font-bold text-lg"
-              disabled
-            />
-          </div>
-          <div className="flex flex-col relative mr-8">
-            <div className="flex my-3 items-center">
-              <span className="text-pcLightBlack font-bold text-md mr-1 w-[120px] text-center">
-                {versions[selectedIndex]}
-              </span>
-              <button type="button" aria-label="버전 수정" disabled>
-                <BsCaretDownFill
-                  className={`${isVersionOpen ? 'rotate-0' : 'rotate-[-90deg]'}`}
-                />
-              </button>
-              <TextButton
-                moreStyle="w-[100px] leading-[30px] rounded-xl ml-4"
-                color="dark"
-                handleClick={async () => {
-                  try {
-                    // 삭제 API 연결
-                    await deleteContainerById(containorData.containerId);
-                    queryClient.invalidateQueries(['containerData', projectId]);
-                  } catch (e) {
-                    console.log(e);
+        <div className="">
+          <div className="flex items-center justify-between h-[80px]">
+            <div className="flex items-center ml-8">
+              <button
+                type="button"
+                aria-label="권한 수정"
+                onClick={() => {
+                  setIsOpen((prev) => !prev);
+                  if (isOpen === true) {
+                    setIsVersionOpen(false);
                   }
                 }}
               >
-                <span className="text-white text-md">삭제</span>
-              </TextButton>
+                <BsCaretDownFill
+                  className={` ${isOpen ? 'rotate-0' : 'rotate-[-90deg]'}`}
+                  size="1.5rem"
+                />
+              </button>
+              <InputBox
+                type="text"
+                placeholder="제목을 입력해주세요 *"
+                value={containorData.templateTitle}
+                isError={false}
+                moreStyle="w-[600px] mx-2 font-bold text-lg"
+                disabled
+              />
             </div>
-            <div className="absolute top-10">
-              {isVersionOpen &&
-                versions.map((version, index) => {
-                  if (index !== selectedIndex)
-                    return (
-                      <button
-                        type="button"
-                        aria-label="버전 관리"
-                        className="relative z-10"
-                      >
-                        <div className="w-[130px]  leading-[30px] border-solid border-[2px] border-pcDarkGray rounded-xl text-left bg-pcLightBlack">
-                          <span className="font-bold pl-4 text-white">
-                            {version}
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  return '';
-                })}
+            <div className="flex flex-col relative mr-8">
+              <div className="flex my-3 items-center">
+                <span className="text-pcLightBlack font-bold text-md mr-1 w-[120px] text-center">
+                  {versions[selectedIndex]}
+                </span>
+                <button type="button" aria-label="버전 수정" disabled>
+                  <BsCaretDownFill
+                    className={`${isVersionOpen ? 'rotate-0' : 'rotate-[-90deg]'}`}
+                  />
+                </button>
+                <TextButton
+                  moreStyle="w-[100px] leading-[30px] rounded-xl ml-4"
+                  color="dark"
+                  handleClick={async () => {
+                    try {
+                      // 삭제 API 연결
+                      await deleteContainerById(containorData.containerId);
+                      queryClient.invalidateQueries([
+                        'containerData',
+                        projectId,
+                      ]);
+                    } catch (e) {
+                      console.log(e);
+                    }
+                  }}
+                >
+                  <span className="text-white text-md">삭제</span>
+                </TextButton>
+              </div>
+              <div className="absolute top-10">
+                {isVersionOpen &&
+                  versions.map((version, index) => {
+                    if (index !== selectedIndex)
+                      return (
+                        <button
+                          type="button"
+                          aria-label="버전 관리"
+                          className="relative z-10"
+                        >
+                          <div className="w-[130px]  leading-[30px] border-solid border-[2px] border-pcDarkGray rounded-xl text-left bg-pcLightBlack">
+                            <span className="font-bold pl-4 text-white">
+                              {version}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    return '';
+                  })}
+              </div>
             </div>
           </div>
+          <div className="flex items-center justify-center space-y-4 mb-2">
+            <a
+              href={`https://${containorData.savedSubdomain}.${defaultDomain}.pnu.app`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-2 bg-[#EA991F] hover:bg-[#EA991F]/80 text-white font-semibold rounded-lg shadow transition duration-300"
+            >
+              사이트로 이동
+            </a>
+          </div>
         </div>
+
         {isOpen && (
           <div className="flex flex-col ml-8">
             <div className="flex items-center my-2">
@@ -264,10 +280,12 @@ function ContainorDetailBox({
                 placeholder="서브도메인 *"
                 isError={false}
                 moreStyle="w-[250px] mr-2 pl-6 font-bold text-md"
-                defaultValue={containorData.savedSubdomain}
+                value={containorData.savedSubdomain}
                 disabled
               />
-              <span className="font-bold text-md">.{defaultDomain}</span>
+              <span className="font-bold text-md">
+                .{defaultDomain}.pnu.app
+              </span>
               <label className="inline-flex items-center">
                 <input
                   type="checkbox"
@@ -280,6 +298,7 @@ function ContainorDetailBox({
             </div>
             <div className="mt-4">
               <UploadBox
+                containorData={containorData}
                 savedFiles={containorData.containorFiles}
                 containorIndex={containorIndex}
                 isExistContainer={isExistContainer}
@@ -473,7 +492,7 @@ function ContainorDetailBox({
               placeholder="서브도메인 *"
               isError={false}
               moreStyle="w-[250px] mr-2 pl-6 font-bold text-md"
-              defaultValue={containorData.savedSubdomain}
+              value={containorData?.subdomain}
               disabled={containorData.defaultSubDomain}
               onChange={(e) => {
                 setContainorsData((prev) => {
@@ -501,7 +520,7 @@ function ContainorDetailBox({
                 });
               }}
             />
-            <span className="font-bold text-md">.{defaultDomain}</span>
+            <span className="font-bold text-md">.{defaultDomain}.pnu.app</span>
             <label className="inline-flex items-center">
               <input
                 type="checkbox"
@@ -538,11 +557,12 @@ function ContainorDetailBox({
                       false
                     ) {
                       setHasDefaultSubDomain(true);
+                      tempContainorData[containorIndex].subdomain = '';
                     } else setHasDefaultSubDomain(false);
 
                     tempContainorData[containorIndex].defaultSubDomain =
                       !tempContainorData[containorIndex].defaultSubDomain;
-
+                    console.log(tempContainorData);
                     return tempContainorData;
                   });
                 }}
@@ -552,6 +572,7 @@ function ContainorDetailBox({
           </div>
           <div className="mt-4">
             <UploadBox
+              containorData={containorData}
               savedFiles={containorData.containorFiles}
               setContainorsData={setContainorsData}
               containorIndex={containorIndex}

@@ -31,7 +31,7 @@ function EnvBox({
                   isError={false}
                   moreStyle="w-[300px] font-bold text-md"
                   textMoreStyle="py-[4px]"
-                  defaultValue={envKeyValue}
+                  value={envKeyValue}
                   disabled
                 />
                 <span className="mx-4 font-bold text-xl">:</span>
@@ -41,7 +41,7 @@ function EnvBox({
                   isError={false}
                   moreStyle="w-[300px] font-bold text-md"
                   textMoreStyle="py-[4px]"
-                  defaultValue={envValueValue}
+                  value={envValueValue}
                   disabled
                 />
                 <button

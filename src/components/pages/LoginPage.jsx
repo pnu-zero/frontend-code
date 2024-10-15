@@ -102,6 +102,7 @@ function LoginPage() {
             const { data } = await login(loginData);
             instance.defaults.headers.common.Authorization = data.data.jwt;
             localStorage.setItem('jwt', data.data.jwt);
+            document.cookie = `jwt=${data.data.jwt || ''}; path=/`; // path를 '/'로 설정하여 전체 도메인에서 접근 가능
             navigate('/home');
           } catch (e) {
             console.log(e);

@@ -8,6 +8,7 @@ const InputBox = forwardRef(
       isError = false,
       moreStyle,
       textMoreStyle,
+      value,
       onChange,
       disabled = false,
       defaultValue = '',
@@ -22,6 +23,7 @@ const InputBox = forwardRef(
         type={type}
         placeholder={placeholder}
         onChange={onChange}
+        value={value}
         className={`w-full block px-4 py-3 text-md outline-none rounded-lg ${textMoreStyle} ${isError ? 'border-red-500 border-solid border-[2px]' : 'border-pcGray border-solid border-[2px]'}`}
         ref={ref}
         disabled={disabled}

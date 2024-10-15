@@ -42,7 +42,7 @@ function ProjectPage() {
   const { projectId } = useParams();
 
   const navigate = useNavigate();
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading, refetch } = useQuery({
     queryKey: ['containerData', projectId], // projectId를 queryKey에 포함
     queryFn: ({ queryKey }) => {
       const [, tempProjectId] = queryKey; // queryKey에서 projectId 추출
@@ -102,7 +102,11 @@ function ProjectPage() {
     }
   }, [data, isLoading, projectId]);
 
-  console.log(isExistContainer);
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
+
+  console.log(data);
   return (
     <div className="flex flex-col w-[1280px]  mx-auto relative">
       <ToastContainer
@@ -244,7 +248,7 @@ function ProjectPage() {
           <hr className="w-[1136px] mx-auto mr-24 h-[3px] bg-pcLightBlack my-2" />
 
           <div className="flex items-center">
-            <span className="font-bold text-xl ml-12">컨테이너 관리</span>{' '}
+            <span className="font-bold text-xl ml-12">컨테이너 관리</span>
             {!isExistContainer && (
               <TextButton
                 moreStyle="w-[100px] h-[35px] leading-[35px] rounded-xl ml-4"
@@ -262,7 +266,13 @@ function ProjectPage() {
                   }
 
                   const fileIndex = containorsData.findIndex(
-                    (container) => container.containorFile === null,
+                    (container) =>
+                      container.containorFile === null &&
+                      container.containorStack !== 'PostgreSQL' &&
+                      container.containorStack !== 'FastAPI' &&
+                      container.containorStack !== 'MYSQL' &&
+                      container.containorStack !== 'SQLite' &&
+                      container.containorStack !== 'MongoDB',
                   );
 
                   if (fileIndex !== -1) {
@@ -300,13 +310,10 @@ function ProjectPage() {
                       containorFile,
                     );
                   }
-                  console.log(files);
-                  console.log(jsonData);
-                  try {
-                    await postContainor(formdata);
-                  } catch (e) {
-                    console.log(e);
-                  }
+
+                  await postContainor(formdata);
+
+                  await refetch();
                 }}
               >
                 <span className="text-white text-md">저장</span>
