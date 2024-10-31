@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BiFace, BiSolidBookmarkStar, BiSearchAlt2 } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
+import { AiOutlineAntCloud } from 'react-icons/ai';
 import ProjectCard from '../atom/ProjectCard';
 import GroupCard from '../atom/GroupCard';
 import TextButton from '../atom/TextButton';
@@ -46,10 +47,9 @@ function Navigation() {
           <div className="flex flex-col">
             {/* Sticky 헤더 */}
             <div className="flex items-center bg-pcLightBlue z-10">
-              <BiFace size="2.5rem" className="mx-4 my-8" />
+              <AiOutlineAntCloud size="2.5rem" className="mx-4 my-8" />
               <div className="flex flex-col">
                 <span className="font-bold text-xl">PNU CLOUD</span>
-                <span className="text-sm">Forbidden Proxy Attendance</span>
               </div>
             </div>
 

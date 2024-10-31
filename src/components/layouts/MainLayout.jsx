@@ -75,7 +75,7 @@ function MainLayout() {
   return (
     <div className="h-[100vh] relative">
       <div className="absolute flex top-4 right-24 items-center">
-        <span className="font-bold mr-1">김선우</span>
+        <span className="font-bold mr-1">내 계정</span>
         <button
           type="button"
           className="relative z-10"

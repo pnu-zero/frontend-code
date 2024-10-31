@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { BsCaretDownFill } from 'react-icons/bs';
 import { BiCloud } from 'react-icons/bi';
@@ -9,8 +9,8 @@ import InputBox from '../atom/InputBox';
 import EnvBox from '../atom/EnvBox';
 import UploadBox from '../atom/UploadBox';
 import TextButton from '../atom/TextButton';
-import AddingEnvModal from '../modals/AddingEnvModal';
 import { deleteContainerById } from '../../apis/containor';
+import ContainerModal from '../modals/ContainerModal';
 
 function ContainorDetailBox({
   containorData,
@@ -26,6 +26,25 @@ function ContainorDetailBox({
   const notify = (message) => {
     toast.error(message);
   };
+
+  const [isOpenContainerDescModal, setIsOpenContainerDescModal] =
+    useState(false);
+
+  const [containerMessage, setContainerMessage] = useState('');
+
+  useEffect(() => {
+    if (
+      containorData?.containorStack === 'FastAPI' ||
+      containorData?.containorStack === 'MYSQL' ||
+      containorData?.containorStack === 'PostgreSQL' ||
+      containorData?.containorStack === 'MongoDB' ||
+      containorData?.containorStack === 'SQLite'
+    )
+      setContainerMessage(
+        'DB 관련 컨테이너에는 파일 업로드가 필요하지 않습니다. 필수 환경 변수를 입력해 주세요.',
+      );
+    else setContainerMessage('파일과 사용하실 환경 변수를 입력해 주세요.');
+  }, []);
 
   const [versions] = useState(() => {
     if (containorData?.containorStack === null) return [];
@@ -325,6 +344,23 @@ function ContainorDetailBox({
     <div
       className={`w-[1100px] border-solid border-[2px] border-pcDarkGray rounded-3xl mb-6 `}
     >
+      <ToastContainer
+        position="top-center" // 알람 위치 지정
+        autoClose={3000} // 자동 off 시간
+        hideProgressBar={false} // 진행시간바 숨김
+        closeOnClick // 클릭으로 알람 닫기
+        rtl={false} // 알림 좌우 반전
+        pauseOnFocusLoss // 화면을 벗어나면 알람 정지
+        draggable // 드래그 가능
+        pauseOnHover // 마우스를 올리면 알람 정지
+        theme="dark"
+        // limit={1} // 알람 개수 제한
+      />
+      <ContainerModal
+        modalOpen={isOpenContainerDescModal}
+        setModalOpen={setIsOpenContainerDescModal}
+        message={containerMessage}
+      />
       {/* <AddingEnvModal
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
@@ -582,13 +618,22 @@ function ContainorDetailBox({
             <AiFillPushpin size="1.7rem" className="mr-2" />
             <span className="font-bold text-xl">ENV</span>
           </div>
-          <div className="my-4 mt-2">
+          <div className="my-4 mt-2 flex items-end">
             <EnvBox
               setModalOpen={setModalOpen}
               savedEnvs={containorData.envVars}
               setContainorsData={setContainorsData}
               containorIndex={containorIndex}
             />
+            <button
+              type="button"
+              className="px-6 py-3  text-white font-semibold rounded-lg shadow-md  bg-[#EA991F] hover:bg-[#EA991F]/80 focus:outline-none  transition duration-300"
+              onClick={() => {
+                setIsOpenContainerDescModal(true);
+              }}
+            >
+              컨테이너 설명서 열기
+            </button>
           </div>
         </div>
       )}

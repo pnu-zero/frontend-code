@@ -14,7 +14,7 @@ function ContainerModal({ modalOpen, setModalOpen, message }) {
     },
     content: {
       width: '500px',
-      height: '350px',
+      height: '200px',
       zIndex: '150',
       position: 'absolute',
       top: '50%',

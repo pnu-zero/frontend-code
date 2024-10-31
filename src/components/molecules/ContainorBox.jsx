@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ContainerModal from '../modals/ContainerModal';
 
 function ContainorBox({
@@ -61,18 +61,35 @@ function ContainorBox({
 
   const [isOpenContainerDescModal, setIsOpenContainerDescModal] =
     useState(false);
+
+  const [containerMessage, setContainerMessage] = useState('');
+
+  useEffect(() => {
+    if (
+      stackName === 'FastAPI' ||
+      stackName === 'MYSQL' ||
+      stackName === 'PostgreSQL' ||
+      stackName === 'MongoDB' ||
+      stackName === 'SQLite'
+    )
+      setContainerMessage(
+        'DB 관련 컨테이너에는 파일 업로드가 필요하지 않습니다. 필수 환경 변수를 입력해 주세요.',
+      );
+    else setContainerMessage('파일과 사용하실 환경 변수를 입력해 주세요.');
+  }, []);
+
   return (
     <div>
       <ContainerModal
         modalOpen={isOpenContainerDescModal}
         setModalOpen={setIsOpenContainerDescModal}
-        message="설명임"
+        message={containerMessage}
       />
       <button
         type="button"
         onClick={() => {
           setIsOpenContainerDescModal(true);
-          console.log(setIsOpenContainerDescModal);
+
           setContainorsData((prev) => {
             const tempContainorData = prev.map(
               ({
@@ -98,12 +115,7 @@ function ContainorBox({
 
             if (id === -Infinity) id = 1;
 
-            if (
-              stackName === 'MYSQL' ||
-              stackName === 'PostgreSQL' ||
-              stackName === 'MongoDB' ||
-              stackName === 'SQLite'
-            ) {
+            if (stackName === 'PostgreSQL') {
               tempContainorData.push({
                 containerId: id * -1,
                 templateTitle: '',
@@ -112,7 +124,110 @@ function ContainorBox({
                 envVars: [
                   {
                     id: -1,
-                    key: '기본 키',
+                    key: 'POSTGRES_DB',
+                    value: '',
+                  },
+                  {
+                    id: -2,
+                    key: 'POSTGRES_USER',
+                    value: '',
+                  },
+                  {
+                    id: -3,
+                    key: 'POSTGRES_PASSWORD',
+                    value: '',
+                  },
+                ],
+                containorFile: null,
+                defaultSubDomain: false,
+              });
+            } else if (stackName === 'MYSQL') {
+              tempContainorData.push({
+                containerId: id * -1,
+                templateTitle: '',
+                containorStack: representVersions,
+                subdomain: '',
+                envVars: [
+                  {
+                    id: -1,
+                    key: 'MYSQL_USER',
+                    value: '',
+                  },
+                  {
+                    id: -2,
+                    key: 'MYSQL_PASSWORD',
+                    value: '',
+                  },
+                  {
+                    id: -3,
+                    key: 'MYSQL_ROOT_PASSWORD',
+                    value: '',
+                  },
+                  {
+                    id: -4,
+                    key: 'MYSQL_DATABASE',
+                    value: '',
+                  },
+                ],
+                containorFile: null,
+                defaultSubDomain: false,
+              });
+            } else if (stackName === 'MongoDB') {
+              tempContainorData.push({
+                containerId: id * -1,
+                templateTitle: '',
+                containorStack: representVersions,
+                subdomain: '',
+                envVars: [
+                  {
+                    id: -1,
+                    key: 'MongoDB_USER',
+                    value: '',
+                  },
+                  {
+                    id: -2,
+                    key: 'MongoDB_PASSWORD',
+                    value: '',
+                  },
+                  {
+                    id: -3,
+                    key: 'MongoDB_ROOT_PASSWORD',
+                    value: '',
+                  },
+                  {
+                    id: -4,
+                    key: 'MongoDB_DATABASE',
+                    value: '',
+                  },
+                ],
+                containorFile: null,
+                defaultSubDomain: false,
+              });
+            } else if (stackName === 'SQLite') {
+              tempContainorData.push({
+                containerId: id * -1,
+                templateTitle: '',
+                containorStack: representVersions,
+                subdomain: '',
+                envVars: [
+                  {
+                    id: -1,
+                    key: 'SQLite_USER',
+                    value: '',
+                  },
+                  {
+                    id: -2,
+                    key: 'SQLite_PASSWORD',
+                    value: '',
+                  },
+                  {
+                    id: -3,
+                    key: 'SQLite_ROOT_PASSWORD',
+                    value: '',
+                  },
+                  {
+                    id: -4,
+                    key: 'SQLite_DATABASE',
                     value: '',
                   },
                 ],

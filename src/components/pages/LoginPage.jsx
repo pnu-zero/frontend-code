@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import InputBox from '../atom/InputBox';
 import Alink from '../atom/Alink';
 import TextButton from '../atom/TextButton';
@@ -8,6 +8,10 @@ import instance from '../../apis/instance';
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirectUrl = searchParams.get('redirectUrl');
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
@@ -103,7 +107,13 @@ function LoginPage() {
             instance.defaults.headers.common.Authorization = data.data.jwt;
             localStorage.setItem('jwt', data.data.jwt);
             document.cookie = `jwt=${data.data.jwt || ''}; path=/`; // path를 '/'로 설정하여 전체 도메인에서 접근 가능
-            navigate('/home');
+            console.log(redirectUrl);
+            if (redirectUrl === null || redirectUrl === undefined) {
+              navigate('/home');
+              return;
+            }
+
+            window.location.href = `${redirectUrl}`;
           } catch (e) {
             console.log(e);
           }

@@ -12,6 +12,7 @@ import ProjectEnrollmentPage from './components/pages/ProjectEnrollmentPage';
 import 'react-toastify/dist/ReactToastify.css';
 import MainPage from './components/pages/MainPage';
 import AdminPage from './components/pages/AdminPage';
+import NoAuthorityPage from './components/pages/NoAuthorityPage';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/my-profile" element={<MyProfilePage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/no-authority" element={<NoAuthorityPage />} />
           {/* <Route path="/test" element={<Test />} /> */}
           {/* <Route path="*" element={<NonFoundClientError />} /> */}
         </Routes>
